@@ -2,7 +2,7 @@
 import time, subprocess, requests, logging, json, threading, re
 from pathlib import Path
 from queue import Queue
-from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver as Observer
 from watchdog.events import FileSystemEventHandler
 import schedule
 
@@ -246,9 +246,14 @@ class CronHandler(FileSystemEventHandler):
     def on_created(self, event):
         if not event.is_directory and event.src_path.endswith(".json"):
             path = Path(event.src_path)
-            load_cron(path)
-            cfg = json.loads(path.read_text())
-            send_telegram(f"📅 크론 추가됨: {cfg.get('name', path.stem)} ({cfg.get('schedule','?')})")
+            time.sleep(0.5)  # 파일 쓰기 완료 대기
+            try:
+                cfg = json.loads(path.read_text())
+                load_cron(path)
+                status = "" if cfg.get("enabled", True) else " (비활성)"
+                send_telegram(f"📅 크론 추가됨: {cfg.get('name', path.stem)} ({cfg.get('schedule','?')}){status}")
+            except Exception as e:
+                log.error(f"cron add error: {e}")
     def on_modified(self, event):
         if not event.is_directory and event.src_path.endswith(".json"):
             name = Path(event.src_path).stem
