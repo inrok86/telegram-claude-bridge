@@ -2,7 +2,7 @@
 import time, subprocess, requests, logging, json, threading, re
 from pathlib import Path
 from queue import Queue
-from watchdog.observers.polling import PollingObserver as Observer
+from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import schedule
 
