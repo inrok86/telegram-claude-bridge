@@ -245,7 +245,10 @@ def load_all_crons():
 class CronHandler(FileSystemEventHandler):
     def on_created(self, event):
         if not event.is_directory and event.src_path.endswith(".json"):
-            load_cron(Path(event.src_path))
+            path = Path(event.src_path)
+            load_cron(path)
+            cfg = json.loads(path.read_text())
+            send_telegram(f"📅 크론 추가됨: {cfg.get('name', path.stem)} ({cfg.get('schedule','?')})")
     def on_modified(self, event):
         if not event.is_directory and event.src_path.endswith(".json"):
             name = Path(event.src_path).stem

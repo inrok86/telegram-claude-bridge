@@ -14,3 +14,4 @@ __pycache__/
 
 # 임시
 /tmp/
+.io_server.py.swp
