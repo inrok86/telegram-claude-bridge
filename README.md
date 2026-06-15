@@ -20,7 +20,7 @@ tmux session "claude-agent" (Claude Code)
 ## 설치
 
 ```bash
-git clone ...
+git clone git@github.com:inrok86/telegram-claude-bridge.git
 cd claude-io
 pip install -r requirements.txt
 cp config.sample.json config.json  # 편집 필요
