@@ -1,0 +1,7 @@
+{
+  "name": "llm-news",
+  "schedule": "07:00",
+  "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+  "enabled": true,
+  "prompt": "매일 아침 LLM 뉴스 브리핑입니다. web_search로 최근 24시간 이내 최신 뉴스만 검색하세요. OpenAI/Anthropic/Google 공식 발표, 유명 IT 매체의 확인된 사실만 요약하세요. 형식: 📢 오늘의 LLM 뉴스 브리핑 (날짜) / 핵심 헤드라인 3~5개 / 주요 내용 요약(원문 링크 포함) / 커뮤니티 반응."
+}

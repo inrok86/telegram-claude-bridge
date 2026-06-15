@@ -1,0 +1,7 @@
+{
+  "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
+  "chat_id": 123456789,
+  "tmux_session": "claude-agent",
+  "worker_timeout": 300,
+  "stable_secs": 3
+}

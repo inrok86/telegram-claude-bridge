@@ -1,0 +1,16 @@
+# 민감 정보
+config.json
+
+# 로그 & 리포트
+logs/
+reports/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# 임시
+/tmp/

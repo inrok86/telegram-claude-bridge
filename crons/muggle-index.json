@@ -1,0 +1,7 @@
+{
+  "name": "muggle-index",
+  "schedule": "11:30",
+  "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+  "enabled": true,
+  "prompt": "⏰ [Muggle Index] 디시인사이드 실시간 베스트(https://gall.dcinside.com/board/lists/?id=dcbest) 1페이지부터 24시간 전 글까지 긁으세요. 비트코인/코인/주식 관련 글의 분위기를 분석해서 보고서 작성: 1.😐 조용함(관련글 0~2개) 2.⚠️ 주의(폭락/공포 글이 베스트) 3.💎 매수찬스(흑우/한강/꺼억 등 조롱글 베스트→강력알림) 4.🚨 매도관점(수익인증/환희글). 3번4번 발견시 제목과 링크 포함."
+}
