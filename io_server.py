@@ -256,8 +256,17 @@ class CronHandler(FileSystemEventHandler):
                 log.error(f"cron add error: {e}")
     def on_modified(self, event):
         if not event.is_directory and event.src_path.endswith(".json"):
-            name = Path(event.src_path).stem
-            unload_cron(name); load_cron(Path(event.src_path))
+            path = Path(event.src_path)
+            time.sleep(0.3)
+            try:
+                cfg = json.loads(path.read_text())
+                name = cfg.get("name", path.stem)
+                unload_cron(name)
+                load_cron(path)
+                status = "✅ 활성" if cfg.get("enabled", True) else "⏸️ 비활성"
+                send_telegram(f"📅 크론 수정됨: {name} ({cfg.get('schedule','?')}) {status}")
+            except Exception as e:
+                log.error(f"cron modify error: {e}")
     def on_deleted(self, event):
         if not event.is_directory and event.src_path.endswith(".json"):
             name = Path(event.src_path).stem
