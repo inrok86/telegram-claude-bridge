@@ -86,12 +86,16 @@ def send_to_claude(message):
 def is_working(text):
     return "esc to interrupt" in text
 
-def extract_last_response(text: str) -> str:
-    """마지막 사용자 ❯ ~ 현재 프롬프트 ❯ 사이 Claude 응답 추출"""
-    parts = text.split("❯")
+def extract_last_response(after: str, before: str = "") -> str:
+    """before에 없던 새 Claude 응답 블록 추출"""
+    before_blocks = set(before.split("❯"))
+    parts = after.split("❯")
     if len(parts) < 3:
         return ""
     block = parts[-2]  # 마지막에서 두 번째 블록
+    # before에 이미 있던 블록이면 skip
+    if block in before_blocks:
+        return ""
     # 첫 줄은 사용자 질문이므로 제거
     block = "\n".join(block.splitlines()[1:])
     skip = ("⏵⏵", "────", "bypass permissions", "for agents",
@@ -125,7 +129,7 @@ def poll_for_response(snapshot_before: str):
         if is_working(current):
             working_seen = True
 
-        response = extract_last_response(current)
+        response = extract_last_response(current, snapshot_before)
 
         if response != last_text:
             if response:
