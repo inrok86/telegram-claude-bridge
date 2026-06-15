@@ -172,33 +172,22 @@ def worker():
         item = task_queue.get()
         label = item.get("label", "task")
         message = item.get("message", "")
-        cron_name = item.get("cron_name")
 
-        if cron_name:
-            ts = int(time.time())
-            report_path = REPORTS_DIR / f"{ts}_{cron_name}.md"
-            full_msg = message + f" 결과를 {report_path} 에 저장해줘"
-            report_done.clear()
-            send_to_claude(full_msg)
-            if not report_done.wait(timeout=WORKER_TIMEOUT):
-                log.warning(f"report timeout: {label}")
-                send_telegram(f"⚠️ {label} 타임아웃")
-        else:
-            snapshot = capture_pane(scrollback=True)
-            capture_done.clear()
-            send_to_claude(message)
-            t = threading.Thread(target=poll_for_response, args=(snapshot,), daemon=True)
-            t.start()
-            if not capture_done.wait(timeout=WORKER_TIMEOUT):
-                log.warning(f"capture timeout: {label}")
-                send_telegram(f"⚠️ {label} 타임아웃")
+        snapshot = capture_pane(scrollback=True)
+        capture_done.clear()
+        send_to_claude(message)
+        t = threading.Thread(target=poll_for_response, args=(snapshot,), daemon=True)
+        t.start()
+        if not capture_done.wait(timeout=WORKER_TIMEOUT):
+            log.warning(f"timeout: {label}")
+            send_telegram(f"⚠️ {label} 타임아웃")
 
         task_queue.task_done()
         time.sleep(1)
 
 
-def enqueue(message, label=None, cron_name=None):
-    task_queue.put({"message": message, "label": label or message[:30], "cron_name": cron_name})
+def enqueue(message, label=None):
+    task_queue.put({"message": message, "label": label or message[:30]})
     log.info(f"queued [{label}] (q={task_queue.qsize()})")
 
 
@@ -229,7 +218,7 @@ def load_cron(path: Path):
             d = day.lower()
             if d not in days_map: continue
             job = days_map[d].at(time_str).do(
-                lambda p=prompt, n=name: enqueue(f"[크론: {n}] {p}", label=n, cron_name=n))
+                lambda p=prompt, n=name: enqueue(f"[크론: {n}] {p}", label=n))
             jobs.append(job)
         _loaded_crons[name] = jobs
         log.info(f"cron: {name} @ {time_str} {days}")

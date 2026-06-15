@@ -1,7 +1,13 @@
 {
   "name": "market-news",
-  "schedule": "19:00",
-  "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+  "schedule": "20:30",
+  "days": [
+    "mon",
+    "tue",
+    "wed",
+    "thu",
+    "fri"
+  ],
   "enabled": true,
   "prompt": "저녁 주식/코인 뉴스 브리핑입니다. web_search로 오늘 주요 뉴스를 검색하세요. 형식: 📈 저녁 시장 브리핑 (날짜) / 1. 국내외 증시 동향 / 2. 주요 코인 시세 및 뉴스 / 3. 내일 주목할 이슈. 간결하게 핵심만 정리해주세요."
 }
