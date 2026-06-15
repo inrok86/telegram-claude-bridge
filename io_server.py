@@ -312,8 +312,11 @@ def main():
     threading.Thread(target=run_scheduler, daemon=True).start()
     threading.Thread(target=worker, daemon=True).start()
 
-    cron_lines = [f"  • {name} ({jobs[0].next_run.strftime('%H:%M')})"
-                  for name, jobs in _loaded_crons.items() if jobs]
+    cron_lines = []
+    for name, jobs in _loaded_crons.items():
+        if not jobs: continue
+        cfg = json.loads((CRONS_DIR / f"{name}.json").read_text())
+        cron_lines.append(f"  • {name} ({cfg.get('schedule','?')})")
     summary = "\n" + "\n".join(cron_lines) if cron_lines else " (없음)"
     send_telegram(f"🟢 IO 서버 시작됨\n📅 크론:{summary}")
     log.info("IO server started")
