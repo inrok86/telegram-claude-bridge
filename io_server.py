@@ -204,13 +204,15 @@ def enqueue(message, label=None, cron_name=None):
 
 # ── Cron 관리 ─────────────────────────────────────────────
 
-DAYS_MAP = {
-    "mon": schedule.every().monday, "tue": schedule.every().tuesday,
-    "wed": schedule.every().wednesday, "thu": schedule.every().thursday,
-    "fri": schedule.every().friday, "sat": schedule.every().saturday,
-    "sun": schedule.every().sunday,
-}
-ALL_DAYS = list(DAYS_MAP.keys())
+ALL_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+def get_days_map():
+    return {
+        "mon": schedule.every().monday, "tue": schedule.every().tuesday,
+        "wed": schedule.every().wednesday, "thu": schedule.every().thursday,
+        "fri": schedule.every().friday, "sat": schedule.every().saturday,
+        "sun": schedule.every().sunday,
+    }
 _loaded_crons = {}
 
 def load_cron(path: Path):
@@ -221,11 +223,12 @@ def load_cron(path: Path):
         time_str = cfg.get("schedule", "07:00")
         days = cfg.get("days", ALL_DAYS)
         if not cfg.get("enabled", True): return
+        days_map = get_days_map()
         jobs = []
         for day in days:
             d = day.lower()
-            if d not in DAYS_MAP: continue
-            job = DAYS_MAP[d].at(time_str).do(
+            if d not in days_map: continue
+            job = days_map[d].at(time_str).do(
                 lambda p=prompt, n=name: enqueue(f"[크론: {n}] {p}", label=n, cron_name=n))
             jobs.append(job)
         _loaded_crons[name] = jobs
@@ -275,7 +278,7 @@ class CronHandler(FileSystemEventHandler):
 def run_scheduler():
     while True:
         schedule.run_pending()
-        time.sleep(30)
+        time.sleep(10)
 
 
 # ── 텔레그램 Polling ──────────────────────────────────────
